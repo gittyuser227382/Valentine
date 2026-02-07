@@ -73,7 +73,7 @@
       cursor: pointer;
       box-shadow: 0 10px 24px rgba(0,0,0,.14);
       user-select: none;
-      transition: background .12s ease, left 0.15s ease, top 0.15s ease;
+      transition: background .12s ease, left 0.15s ease, top 0.15s ease, opacity 1.5s ease;
     }
 
     #yesBtn {
@@ -83,6 +83,7 @@
       color: #fff;
       opacity: 0;
       z-index: 10;
+      pointer-events: none; /* Deactivated until visible */
     }
     #yesBtn:hover { background: var(--yesHover); }
 
@@ -109,10 +110,14 @@
       animation: pop .35s ease;
     }
 
+    /* FIXED IMAGE SIZE FOR RESULT PAGE */
     .fireworks {
-      width: min(350px, 90vw);
+      width: min(350px, 80vw);
+      max-height: 40vh; /* Prevents image from going off-screen */
+      object-fit: contain;
       margin: 0 auto;
       display: block;
+      border-radius: 12px;
     }
 
     @keyframes pop {
@@ -163,6 +168,7 @@
     let yesScale = 0;
     let growthInterval = null;
     let hintSize = 18;
+    let chaseCount = 0;
 
     /* ---------- CONFETTI ---------- */
     const confettiCanvas = document.getElementById("confettiCanvas");
@@ -187,19 +193,22 @@
     /* ---------- GROWTH LOGIC ---------- */
     function startContinuousGrow() {
       if (growthInterval) return;
+      
+      // Gradually reveal Yes button
       yesBtn.style.opacity = "1";
+      yesBtn.style.pointerEvents = "auto";
       yesScale = 1;
 
       growthInterval = setInterval(() => {
-        yesScale += 0.05;
-        if (noScale > 0.3) noScale -= 0.02;
-        hintSize += 0.5;
+        yesScale += 0.04;
+        if (noScale > 0.35) noScale -= 0.015;
+        hintSize += 0.4;
 
         yesBtn.style.transform = `translate(-50%, -50%) scale(${yesScale})`;
         noBtn.style.transform = `translate(-50%, -50%) scale(${noScale})`;
         hint.style.fontSize = hintSize + "px";
 
-        if (yesScale > 20) clearInterval(growthInterval);
+        if (yesScale > 18) clearInterval(growthInterval);
       }, 100);
     }
 
@@ -216,15 +225,22 @@
       let newTop  = (b.top - z.top) + (dy / mag) * 150;
 
       newLeft = Math.max(0, Math.min(newLeft, z.width - b.width));
-      newTop  = Math.max(0, Math.min(newTop, z.height - b.height));
+      newTop = Math.max(0, Math.min(newTop, z.height - b.height));
 
       noBtn.style.left = newLeft + "px";
       noBtn.style.top = newTop + "px";
 
-      startContinuousGrow();
+      // 10 ATTEMPTS LOGIC
+      chaseCount++;
+      if (chaseCount === 5) hint.innerText = "You're persistent...";
+      if (chaseCount === 8) hint.innerText = "Almost there!";
+      
+      if (chaseCount >= 10) {
+        hint.innerText = "Fine! Just click Yes!";
+        startContinuousGrow();
+      }
     }
 
-    // THE EVENT LISTENER THAT WAS MISSING:
     zone.addEventListener("pointermove", e => {
       const b = noBtn.getBoundingClientRect();
       const d = Math.hypot((b.left + b.width / 2) - e.clientX, (b.top + b.height / 2) - e.clientY);
