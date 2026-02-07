@@ -134,7 +134,7 @@
 
   <main class="card">
     <p align="center">
-      <img src="https://github.com/gittyuser227382/Valentine/blob/main/IMG_5751.JPG?raw=true" width="200" height="200" alt="Header Image">
+      <img id="headerImg" src="https://github.com/gittyuser227382/Valentine/blob/main/IMG_5751.JPG?raw=true" width="200" height="200" alt="Header Image">
     </p>
 
     <h1>Chiara will you be my valentine?</h1>
@@ -257,12 +257,14 @@
 
     /* ---------- YES CLICK ---------- */
     yesBtn.addEventListener("click", () => {
-      zone.style.display = "none";
-      hint.style.display = "none";     // HIDE THE HINT
-      result.style.display = "block";
-      resizeConfettiCanvas();
-      fullScreenConfetti();
-    });
+  document.getElementById("headerImg").style.display = "none"; // THIS HIDES THE IMAGE
+  document.querySelector("h1").style.display = "none";         // HIDES THE QUESTION TEXT
+  zone.style.display = "none";
+  hint.style.display = "none";     
+  result.style.display = "block";
+  resizeConfettiCanvas();
+  fullScreenConfetti();
+});
   </script>
 </body>
 </html>
