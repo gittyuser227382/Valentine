@@ -57,7 +57,7 @@
     .button-zone {
       position: relative;
       width: min(520px, 92%);
-      height: 250px; /* Increased height for more running room */
+      height: 250px; 
       margin: 0 auto;
       touch-action: none;
     }
@@ -215,7 +215,6 @@
       let dy = (b.top + b.height / 2) - py;
       let mag = Math.hypot(dx, dy) || 1;
       
-      // Triple jump distance (increased to 280) for a much longer chase
       let newLeft = (b.left - z.left) + (dx / mag) * 280;
       let newTop  = (b.top - z.top) + (dy / mag) * 280;
 
@@ -227,12 +226,12 @@
 
       chaseCount++;
       
-      // Progressive Hints for the long haul
+      // Updated Message Logic for 50 Chases
       if (chaseCount === 10) hint.innerText = "You're surprisingly fast...";
-      if (chaseCount === 20) hint.innerText = "Wow, still trying? 😂";
-      if (chaseCount === 28) hint.innerText = "Almost... got... it...";
+      if (chaseCount === 25) hint.innerText = "Wow, still trying? 😂";
+      if (chaseCount === 35) hint.innerText = "Almost... got... it...";
       
-      if (chaseCount >= 30) {
+      if (chaseCount >= 50) {
         hint.innerText = "FINE, HAVE IT YOUR WAY! ❤️";
         startContinuousGrow();
       }
@@ -241,7 +240,6 @@
     zone.addEventListener("pointermove", e => {
       const b = noBtn.getBoundingClientRect();
       const d = Math.hypot((b.left + b.width / 2) - e.clientX, (b.top + b.height / 2) - e.clientY);
-      // Increased sensitivity (160) so it's even harder to catch
       if (d < 160) moveNo(e.clientX, e.clientY);
     });
 
