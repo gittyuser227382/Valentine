@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+let growthInterval = null;
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -214,17 +215,22 @@
 
     /* ---------- YES BUTTON GROWS AND SLIDES TO CENTER ---------- */
 let yesScale = 1;
-function growYes() {
-  if (yesScale === 1) {
-    // Move to the middle once the "No" button is chased
-    yesBtn.style.left = "50%";
+let growthInterval = null;
+
+function startContinuousGrow() {
+  if (growthInterval) return; // Don't start it twice
+
+  // 1. Move to center immediately when growth starts
+  yesBtn.style.left = "50%";
+  
+  // 2. Start the timer to grow every 100ms
+  growthInterval = setInterval(() => {
+    yesScale += 0.05; // Adjust this number to make it grow faster/slower
     yesBtn.style.transform = `translate(-50%, -50%) scale(${yesScale})`;
-  }
-  
-  yesScale = Math.min(2.2, yesScale + 0.1);
-  
-  // Use translate(-50%, -50%) once it's centering to keep it perfectly aligned
-  yesBtn.style.transform = `translate(-50%, -50%) scale(${yesScale})`;
+    
+    // Optional: Stop growing if it covers the whole screen
+    if (yesScale > 20) clearInterval(growthInterval);
+  }, 100); 
 }
 
     /* ---------- NO BUTTON RUNS AWAY ---------- */
@@ -249,10 +255,11 @@ function growYes() {
       newTop  = clamp(newTop, 0, z.height - b.height);
 
       noBtn.style.left = newLeft + "px";
-      noBtn.style.top = newTop + "px";
-      noBtn.style.transform = "none";
+  noBtn.style.top = newTop + "px";
+  noBtn.style.transform = "none";
 
-      growYes();
+  // REPLACE growYes() WITH THIS:
+  startContinuousGrow(); 
     }
 
     zone.addEventListener("pointermove", e => {
@@ -268,14 +275,15 @@ function growYes() {
 
     /* ---------- YES CLICK ---------- */
     yesBtn.addEventListener("click", () => {
-  document.getElementById("headerImg").style.display = "none"; // THIS HIDES THE IMAGE
-  document.querySelector("h1").style.display = "none";         // HIDES THE QUESTION TEXT
-  zone.style.display = "none";
-  hint.style.display = "none";     
-  result.style.display = "block";
-  resizeConfettiCanvas();
-  fullScreenConfetti();
-});
+      clearInterval(growthInterval); // STOP THE GROWTH
+      document.getElementById("headerImg").style.display = "none"; 
+      document.querySelector("h1").style.display = "none";
+      zone.style.display = "none";
+      hint.style.display = "none";     
+      result.style.display = "block";
+      resizeConfettiCanvas();
+      fullScreenConfetti();
+    });
   </script>
 </body>
 </html>
