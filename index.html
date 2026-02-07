@@ -87,10 +87,13 @@
     }
 
     #yesBtn {
-      left: 18%;
-      background: var(--yes);
-      color: #fff;
-    }
+  left: 18%; /* Start on the left */
+  transform: translateY(-50%) scale(1);
+  background: var(--yes);
+  color: #fff;
+  /* Add 'left' to the transition list */
+  transition: transform .12s ease, background .12s ease, left 0.3s ease; 
+}
     #yesBtn:hover { background: var(--yesHover); }
 
     #noBtn {
@@ -151,7 +154,7 @@
       <h2>YAY! 🎉</h2>
       <img
         class="fireworks"
-        src="https://github.com/gittyuser227382/Valentine/blob/main/IMG_1826.JPG?raw=true"
+        src="https://github.com/gittyuser227382/Valentine/blob/main/IMG_1826.JPG?raw=true" width="500"
         alt="Fireworks"
       />
     </section>
@@ -209,12 +212,20 @@
       }, 300);
     }
 
-    /* ---------- YES BUTTON GROWS ---------- */
-    let yesScale = 1;
-    function growYes() {
-      yesScale = Math.min(2.2, yesScale + 0.1);
-      yesBtn.style.transform = `translateY(-50%) scale(${yesScale})`;
-    }
+    /* ---------- YES BUTTON GROWS AND SLIDES TO CENTER ---------- */
+let yesScale = 1;
+function growYes() {
+  if (yesScale === 1) {
+    // Move to the middle once the "No" button is chased
+    yesBtn.style.left = "50%";
+    yesBtn.style.transform = `translate(-50%, -50%) scale(${yesScale})`;
+  }
+  
+  yesScale = Math.min(2.2, yesScale + 0.1);
+  
+  // Use translate(-50%, -50%) once it's centering to keep it perfectly aligned
+  yesBtn.style.transform = `translate(-50%, -50%) scale(${yesScale})`;
+}
 
     /* ---------- NO BUTTON RUNS AWAY ---------- */
     function clamp(n, min, max) {
